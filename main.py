@@ -34,9 +34,9 @@ def get_data():
     connection = oracledb.connect(
         user=user, password=password, dsn=conn_string)
     cur = connection.cursor()
-    cur.execute('select EMPLOYEE_ID,NAME from ASSETS.Employees')
+    cur.execute('Select Employees.employee_id, Employees.name, login.email, job_title.title, employees.DOB, department.dpt_name From assets.employees inner join assets.Login On Employees.login_id=Login.ID inner join assets.Job_title On Employees.job_id=Job_title.ID inner join assets.Department On Employees.department_id=department.dpt_ID')
     for row in cur:
-        employ.append({"Employee_ID": row[0], "Name": row[1]})
+        employ.append({"Employee_ID": row[0], "Name": row[1], "Email":row[2], "Job":row[3], "dob":row[4], "dpt":row[5]})
     # Close the cursor and connection
     cur.close()
     connection.close()
@@ -69,6 +69,14 @@ def about():
 @app.route('/Insert_View')
 def insert():
     return render_template('Insertion.html', job_id=id)
+
+@app.route('/delete_employ', methods=["GET","POST"])
+def delete():
+    con = oracledb.connect(user=user, password=password, dsn=conn_string)
+    cur = con.cursor()
+    exe = "DELETE FROM ASSETS.EMPLOYEES WHERE EMPLOYEE_ID = "+id
+    cur.execute(exe)
+    return render_template('after_submit.html')
 
 
 @app.route('/Insertion_data', methods=["GET", "POST"])
@@ -106,23 +114,24 @@ def empty():
 
 @app.route('/assests_View')
 def assests():
-    assest = []
+    assestAva = []
+    assetRet = []
     connection = oracledb.connect(
         user=user, password=password, dsn=conn_string)
     cur = connection.cursor()
-    cur.execute('select ASSET_ID,NAME,MODEL,BRAND,COMPANY_ID,IS_AVAILABLE,IS_RETIRED from ASSETS.assets')
+    cur.execute('Select Assets.asset_id, assets.name, assets.model, assets.brand, company.company_name, assets.is_available, assets.is_retired FROM assets.assets inner join assets.company on assets.company_id = company.company_id')
     for row in cur:
-        ava = True
-        if int(row[5]) != 1:
-            ava = False
-        ret = True
-        if int(row[6]) != 1:
-            ret = False
-        assest.append({"id": row[0], "name": row[1], "Model":row[2], "Brand":row[3], "Company":row[4],"Avaviable":ava, "Retired":ret})
+        if int(row[6]) == 1:
+            assetRet.append({"id": row[0], "name": row[1], "Model":row[2], "Brand":row[3], "Company":row[4]})
+        else:
+            ava = True
+            if int(row[5]) != 1:
+               ava = False
+            assestAva.append({"id": row[0], "name": row[1], "Model":row[2], "Brand":row[3], "Company":row[4],"Avaviable":ava })
     # Close the cursor and connection
     cur.close()
     connection.close()
-    return render_template('assests.html',data=assest)
+    return render_template('assests.html',data=[assestAva,assetRet])
 
 @app.route('/requests_View')
 def requets():
@@ -130,7 +139,7 @@ def requets():
     connection = oracledb.connect(
         user=user, password=password, dsn=conn_string)
     cur = connection.cursor()
-    cur.execute('select REQUEST_ID,IS_OPEN,IS_APPROVED,ASSET_ID,EMPLOYEE_ID from ASSETS.REQUESTS')
+    cur.execute('Select requests.request_id, requests.is_open, requests.is_approved, assets.name, employees.name FROM assets.requests inner join assets.assets on requests.asset_id = assets.asset_id inner join assets.employees on requests.employee_id = employees.employee_id')
     for row in cur:
         open = True
         if int(row[1]) != 1:
