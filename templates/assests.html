@@ -14,7 +14,8 @@
             align-items: center;
             text-align: center;">
         </div>
-
+        <br>
+        <h2 style="padding-left: 15%"> Avalaible Assets</h2>
         <div id="table">
             <table class="table" id="tbl">
               <thead style="background-color: #070707; color: white">
@@ -25,13 +26,12 @@
                     <th scope="col">Brand</th>
                     <th scope="col">Company</th>
                     <th scope="col">Is Avaliable</th>
-                    <th scope="col">Is Retired</th>
                     <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody id="myTable" style="background-color: rgb(235, 240, 245)">
                 <!-- first-row -->
-                {% for row in data %}
+                {% for row in data[0] %}
                 <tr>
                     <td>{{ row["id"] }}</td>
                     <td>{{ row["name"] }}</td>
@@ -39,7 +39,55 @@
                     <td>{{ row["Brand"] }}</td>
                     <td>{{ row["Company"] }}</td>
                     <td>{{ row["Avaviable"] }}</td>
-                    <td>{{ row["Retired"] }}</td>
+                    <td style="display: flex; gap: 10px">
+                <i
+                  class="fa fa-trash-o"
+                  aria-hidden="true"
+                  style="cursor: pointer"
+                ></i>
+                <i
+                  class="fa fa-pencil"
+                  aria-hidden="true"
+                  style="cursor: pointer"
+                ></i>
+                <div style="margin-top: -3px">
+                  <i
+                    class="fa fa-plus"
+                    aria-hidden="true"
+                    style="cursor: pointer"
+                    data-bs-toggle="modal"
+                    data-bs-target="#myModal"
+                  ></i>
+                </div>
+              </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        <br>
+        <h2 style="padding-left: 15%"> Retired Assets</h2>
+        <div id="table">
+            <table class="table" id="tbl">
+              <thead style="background-color: #070707; color: white">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Model</th>
+                    <th scope="col">Brand</th>
+                    <th scope="col">Company</th>
+                    <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody id="myTable" style="background-color: rgb(235, 240, 245)">
+                <!-- first-row -->
+                {% for row in data[1] %}
+                <tr>
+                    <td>{{ row["id"] }}</td>
+                    <td>{{ row["name"] }}</td>
+                    <td>{{ row["Model"] }}</td>
+                    <td>{{ row["Brand"] }}</td>
+                    <td>{{ row["Company"] }}</td>
                     <td style="display: flex; gap: 10px">
                 <i
                   class="fa fa-trash-o"
