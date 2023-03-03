@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+
+    <head>
+        <title>Assets</title>
+        {% include 'nav.html' %}
+    </head>
+
+    <body>
+
+        <div style="display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;">
+        </div>
+
+        <div id="table">
+            <table class="table" id="tbl">
+              <thead style="background-color: #070707; color: white">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">open</th>
+                    <th scope="col">approved</th>
+                    <th scope="col">item requested</th>
+                    <th scope="col">request by</th>
+                    <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody id="myTable" style="background-color: rgb(235, 240, 245)">
+                <!-- first-row -->
+                {% for row in data %}
+                <tr>
+                    <td>{{ row["id"] }}</td>
+                    <td>{{ row["is open"] }}</td>
+                    <td>{{ row["is approved"] }}</td>
+                    <td>{{ row["item"] }}</td>
+                    <td>{{ row["employee"] }}</td>
+                    <td style="display: flex; gap: 10px">
+                <i
+                  class="fa fa-trash-o"
+                  aria-hidden="true"
+                  style="cursor: pointer"
+                ></i>
+                <i
+                  class="fa fa-pencil"
+                  aria-hidden="true"
+                  style="cursor: pointer"
+                ></i>
+                <div style="margin-top: -3px">
+                  <i
+                    class="fa fa-plus"
+                    aria-hidden="true"
+                    style="cursor: pointer"
+                    data-bs-toggle="modal"
+                    data-bs-target="#myModal"
+                  ></i>
+                </div>
+              </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+    </body>
+
+</html>
