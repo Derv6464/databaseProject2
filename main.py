@@ -62,6 +62,15 @@ def approve_req(id):
     con.commit()
     return render_template('after_submit.html')
 
+@app.route('/close_req/<int:id>', methods=["GET","POST"])
+def close_req(id):
+    con = oracledb.connect(user=user, password=password, dsn=conn_string)
+    cur = con.cursor()
+    exe = "UPDATE assets.requests SET requests.is_open = 0 WHERE requests.request_id = "+str(id)
+    cur.execute(exe)
+    con.commit()
+    return render_template('after_submit.html')
+
 
 @app.route('/reject_req/<int:id>', methods=["GET","POST"])
 def reject_req(id):

@@ -47,11 +47,30 @@
                                 ></i>
                                 </a>
                             </div>
+                            <div style="margin-top: -3px">
+                                <a href ="{{ url_for('close_req', id=row["id"])}}" onclick="return confirm('Do you want to close this request for {{ row["item"] }}');" title="Close Request">
+                                <i
+                                  class="fa fa-times-circle"
+                                  aria-hidden="true"
+                                  style="cursor: pointer"
+                                ></i>
+                                </a>
+                            </div>
+
                     {% else %}
                             <div style="margin-top: -3px">
                                 <a href ="{{ url_for('approve_req', id=row["id"])}}" onclick="return confirm('Do you want to approve this request for {{ row["item"] }}');" title="Approve Request">
                                 <i
                                   class="fa fa-check"
+                                  aria-hidden="true"
+                                  style="cursor: pointer"
+                                ></i>
+                                </a>
+                            </div>
+                            <div style="margin-top: -3px">
+                                <a href ="{{ url_for('close_req', id=row["id"])}}" onclick="return confirm('Do you want to close this request for {{ row["item"] }}');" title="Close Request">
+                                <i
+                                  class="fa fa-times-circle"
                                   aria-hidden="true"
                                   style="cursor: pointer"
                                 ></i>
