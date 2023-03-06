@@ -14,13 +14,12 @@
             align-items: center;
             text-align: center;">
         </div>
-
+        <h2 style="padding-left: 15%"> Open Requests</h2>
         <div id="table">
             <table class="table" id="tbl">
               <thead style="background-color: #070707; color: white">
                 <tr>
                     <th scope="col">ID</th>
-                    <th scope="col">open</th>
                     <th scope="col">approved</th>
                     <th scope="col">item requested</th>
                     <th scope="col">request by</th>
@@ -29,24 +28,64 @@
               </thead>
               <tbody id="myTable" style="background-color: rgb(235, 240, 245)">
                 <!-- first-row -->
-                {% for row in data %}
+                {% for row in data[1] %}
                 <tr>
                     <td>{{ row["id"] }}</td>
-                    <td>{{ row["is open"] }}</td>
                     <td>{{ row["is approved"] }}</td>
                     <td>{{ row["item"] }}</td>
                     <td>{{ row["employee"] }}</td>
                     <td style="display: flex; gap: 10px">
-                <div style="margin-top: -3px">
-                  <i
-                    class="fa fa-check"
-                    aria-hidden="true"
-                    style="cursor: pointer"
-                    data-bs-toggle="modal"
-                    data-bs-target="#myModal"
-                  ></i>
-                </div>
+
+
+                        {% if row["is approved"] %}
+                            <div style="margin-top: -3px">
+                                <a href ="{{ url_for('reject_req', id=row["id"])}}" onclick="return confirm('Do you want to disapprove this request for {{ row["item"] }}');" title="Disapprove Request">
+                                <i
+                                  class="fa fa-times"
+                                  aria-hidden="true"
+                                  style="cursor: pointer"
+                                ></i>
+                                </a>
+                            </div>
+                    {% else %}
+                            <div style="margin-top: -3px">
+                                <a href ="{{ url_for('approve_req', id=row["id"])}}" onclick="return confirm('Do you want to approve this request for {{ row["item"] }}');" title="Approve Request">
+                                <i
+                                  class="fa fa-check"
+                                  aria-hidden="true"
+                                  style="cursor: pointer"
+                                ></i>
+                                </a>
+                            </div>
+                    {% endif %}
+
+
               </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        <h2 style="padding-left: 15%"> Closed Requests</h2>
+        <div id="table">
+            <table class="table" id="tbl">
+              <thead style="background-color: #070707; color: white">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">approved</th>
+                    <th scope="col">item requested</th>
+                    <th scope="col">request by</th>
+                </tr>
+              </thead>
+              <tbody id="myTable" style="background-color: rgb(235, 240, 245)">
+                <!-- first-row -->
+                {% for row in data[0] %}
+                <tr>
+                    <td>{{ row["id"] }}</td>
+                    <td>{{ row["is approved"] }}</td>
+                    <td>{{ row["item"] }}</td>
+                    <td>{{ row["employee"] }}</td>
+
                 </tr>
                 {% endfor %}
               </tbody>

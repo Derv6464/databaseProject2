@@ -43,22 +43,6 @@ def get_data():
     # Pass the data to the template to display in the HTML table
     return render_template('index.html', data=employ)
 
-'''
-#@app.route('/jobs_view',methods=['GET'])
-#def update():
-   jobs = []
-   connection = oracledb.connect(
-       user=user, password=password, dsn=conn_string)    cur = connection.cursor()
-    cur.execute('SELECT ID, TITLE  FROM ASSETS.JOB_TITLE')
-    for row in cur:
-        jobs.append({"JID": row[0], "JTitle": row[1]})
-    # Close the cursor and connection
-    cur.close()
-    connection.close()
-    # Pass the data to the template to display in the HTML table
-    return render_template('jobs.html', data=jobs)
-    #return render_template('about.html')
-'''
 
 @app.route('/about_View')
 def about():
@@ -69,16 +53,24 @@ def about():
 def insert():
     return render_template('Insertion.html', job_id=id)
 
-@app.route('/delete_employ/<int:id>', methods=["GET","POST"])
-def delete_employ(id):
+@app.route('/approve_req/<int:id>', methods=["GET","POST"])
+def approve_req(id):
     con = oracledb.connect(user=user, password=password, dsn=conn_string)
     cur = con.cursor()
-    exe = "DELETE FROM ASSETS.EMPLOYEES WHERE EMPLOYEE_ID = "+str(id)
+    exe = "UPDATE assets.requests SET requests.is_approved = 1 WHERE requests.request_id = "+str(id)
     cur.execute(exe)
+    con.commit()
     return render_template('after_submit.html')
 
 
-
+@app.route('/reject_req/<int:id>', methods=["GET","POST"])
+def reject_req(id):
+    con = oracledb.connect(user=user, password=password, dsn=conn_string)
+    cur = con.cursor()
+    exe = "UPDATE assets.requests SET requests.is_approved = 0 WHERE requests.request_id = "+str(id)
+    cur.execute(exe)
+    con.commit()
+    return render_template('after_submit.html')
 @app.route('/Insertion_data', methods=["GET", "POST"])
 def getData():
     fname = request.form["fname"]
@@ -157,23 +149,29 @@ def assests():
 
 @app.route('/requests_View')
 def requets():
-    request = []
+    requestCl = []
+    requestOp = []
+
     connection = oracledb.connect(
         user=user, password=password, dsn=conn_string)
     cur = connection.cursor()
     cur.execute('Select requests.request_id, requests.is_open, requests.is_approved, assets.name, employees.name FROM assets.requests inner join assets.assets on requests.asset_id = assets.asset_id inner join assets.employees on requests.employee_id = employees.employee_id')
     for row in cur:
-        open = True
+
         if int(row[1]) != 1:
-            open = False
-        app = True
-        if int(row[2]) != 1:
-            app = False
-        request.append({"id": row[0], "is open": open, "is approved":app, "item":row[3], "employee":row[4]})
+            app = True
+            if int(row[2]) != 1:
+                app = False
+            requestCl.append({"id": row[0], "is approved":app, "item":row[3], "employee":row[4]})
+        else:
+            app = True
+            if int(row[2]) != 1:
+                app = False
+            requestOp.append({"id": row[0], "is approved":app, "item":row[3], "employee":row[4]})
     # Close the cursor and connection
     cur.close()
     connection.close()
-    return render_template('requests.html',data=request)
+    return render_template('requests.html',data=[requestCl,requestOp])
 
 @app.route('/history_View')
 def history():
