@@ -53,15 +53,6 @@
                 <td>{{ row["dob"] }}</td>
                 <td>{{ row["dpt"] }}</td>
               <td style="display: flex; gap: 10px">
-            <a href="{{ url_for('delete_employ', id=row["Employee_ID"])}}"
-            onclick="return confirm('Do you want to permanently delete employe {{ row["Name"] }}?');" title="Delete Employee" color="red">
-             <i
-               class="fa fa-trash-o"
-               aria-hidden="true"
-               style= "cursor: pointer"
-
-             ></i>
-         </a>
                 <div style="margin-top: -3px">
                   <i
                     class="fa fa-plus"
@@ -223,7 +214,7 @@
                     <br />
                     <select
                       name="job_id"
-                      onchange="updateValue(this)"
+                      onchange= "updateValue(this)" 
                       id="job_id"
                       style="
                         border-color: rgb(181, 178, 178);
