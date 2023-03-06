@@ -1,5 +1,13 @@
 <!DOCTYPE html>
 <html>
+<style>
+    a:link{
+        color: red;
+    }
+    a:visited{
+        color: red;
+    }
+</style>
 
   <head>
     <title>Flask Tutorial</title>
@@ -41,13 +49,16 @@
                 <td>{{ row["dob"] }}</td>
                 <td>{{ row["dpt"] }}</td>
               <td style="display: flex; gap: 10px">
+            <a href="{{ url_for('delete_employ', id=row["Employee_ID"])}}"
+               onclick="return confirm('Do you want to permanently delete employe {{ row["Name"] }}?');" title="Delete Employee" color="red">
                 <i
                   class="fa fa-trash-o"
                   aria-hidden="true"
-                  style="cursor: pointer"
-                  data-bs-toggle="modal"
-                  data-bs-target="#myModal2"
+                  style= "cursor: pointer"
+
+
                 ></i>
+            </a>
                 <i
                   class="fa fa-pencil"
                   aria-hidden="true"
@@ -286,7 +297,7 @@
               ></button>
             </div>
             <div class="modal-body">
-              <form action="/delete_row" method="POST">
+
                 <div
                   class="form-row"
                   style="
@@ -308,7 +319,9 @@
                     Delete
                   </button>
                 </div>
+                </div>
               </form>
+
             </div>
           </div>
         </div>

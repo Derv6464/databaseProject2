@@ -43,13 +43,12 @@ def get_data():
     # Pass the data to the template to display in the HTML table
     return render_template('index.html', data=employ)
 
-
-@app.route('/jobs_view',methods=['GET'])
-def update():
-    jobs = []
-    connection = oracledb.connect(
-        user=user, password=password, dsn=conn_string)
-    cur = connection.cursor()
+'''
+#@app.route('/jobs_view',methods=['GET'])
+#def update():
+   jobs = []
+   connection = oracledb.connect(
+       user=user, password=password, dsn=conn_string)    cur = connection.cursor()
     cur.execute('SELECT ID, TITLE  FROM ASSETS.JOB_TITLE')
     for row in cur:
         jobs.append({"JID": row[0], "JTitle": row[1]})
@@ -59,7 +58,7 @@ def update():
     # Pass the data to the template to display in the HTML table
     return render_template('jobs.html', data=jobs)
     #return render_template('about.html')
-
+'''
 
 @app.route('/about_View')
 def about():
@@ -70,13 +69,14 @@ def about():
 def insert():
     return render_template('Insertion.html', job_id=id)
 
-@app.route('/delete_employ', methods=["GET","POST"])
-def delete():
+@app.route('/delete_employ/<int:id>', methods=["GET","POST"])
+def delete_employ(id):
     con = oracledb.connect(user=user, password=password, dsn=conn_string)
     cur = con.cursor()
-    exe = "DELETE FROM ASSETS.EMPLOYEES WHERE EMPLOYEE_ID = "+id
+    exe = "DELETE FROM ASSETS.EMPLOYEES WHERE EMPLOYEE_ID = "+str(id)
     cur.execute(exe)
     return render_template('after_submit.html')
+
 
 
 @app.route('/Insertion_data', methods=["GET", "POST"])
