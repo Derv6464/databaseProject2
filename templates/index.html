@@ -7,6 +7,10 @@
     a:visited{
         color: red;
     }
+
+    a:hover{
+        color: crimson;
+    }
 </style>
 
   <head>
@@ -50,20 +54,14 @@
                 <td>{{ row["dpt"] }}</td>
               <td style="display: flex; gap: 10px">
             <a href="{{ url_for('delete_employ', id=row["Employee_ID"])}}"
-               onclick="return confirm('Do you want to permanently delete employe {{ row["Name"] }}?');" title="Delete Employee" color="red">
-                <i
-                  class="fa fa-trash-o"
-                  aria-hidden="true"
-                  style= "cursor: pointer"
+            onclick="return confirm('Do you want to permanently delete employe {{ row["Name"] }}?');" title="Delete Employee" color="red">
+             <i
+               class="fa fa-trash-o"
+               aria-hidden="true"
+               style= "cursor: pointer"
 
-
-                ></i>
-            </a>
-                <i
-                  class="fa fa-pencil"
-                  aria-hidden="true"
-                  style="cursor: pointer"
-                ></i>
+             ></i>
+         </a>
                 <div style="margin-top: -3px">
                   <i
                     class="fa fa-plus"
@@ -233,6 +231,7 @@
                         height: 37px;
                         border-radius: 7px;
                       "
+
                     >
                       {% for option in job_id %}
                       <option value="{{ option }}">{{ option }}</option>
@@ -278,54 +277,7 @@
           </div>
         </div>
       </div>
-    <div
-        class="modal fade"
-        id="myModal2"
-        tabindex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="modal-header" style="background-color: black">
-              <button
-                style="background-color: rgb(223, 221, 220)"
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-
-                <div
-                  class="form-row"
-                  style="
-                    display: flex;
-                    gap: 2rem;
-                    margin-left: 10%;
-                    margin-right: 10%;
-                    margin-bottom: 15px;
-                  "
-                >
-                    <div style="margin-right: 6%; margin-bottom: 10px">
-                  <!-- <button type="submit" class="btn btn-default">Submit</button> -->
-                  <button
-                    type="submit"
-                    class="btn btn-dark btn-sm"
-                    data-dismiss="modal"
-                    style="float: right"
-                  >
-                    Delete
-                  </button>
-                </div>
-                </div>
-              </form>
-
-            </div>
-          </div>
-        </div>
-      </div>
+    
     </main>
     <script>
       function myFunction() {
