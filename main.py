@@ -126,6 +126,21 @@ def getAssetData():
     con.close()
     return render_template('after_submit.html')
 
+@app.route('/Add_Request', methods=["GET", "POST"])
+def getRequestData():
+    asset = request.form["asset"]
+    employee = request.form["employee"]
+    con = oracledb.connect(user=user, password=password, dsn=conn_string)
+    cur = con.cursor()
+    # print("INSERT INTO HR.JOBS(JOB_ID, JOB_TITLE, MIN_SALARY, MAX_SALARY) VALUES (:0, :1, :2,:3)", (id, title,  int(min), int(max)))
+
+    cur.execute("INSERT INTO ASSETS.REQUESTS(IS_OPEN, IS_APPROVED, ASSET_ID, EMPLOYEE_ID) VALUES (:0, :1, :2,:3)",
+                (1, 0, int(asset), int(employee)))
+    con.commit()
+    cur.close()
+    con.close()
+    return render_template('after_submit.html')
+
 @app.route('/empty_View')
 def empty():
     return render_template('empty.html')
@@ -133,7 +148,9 @@ def empty():
 @app.route('/add_Asset_View')
 def addAssetView():
     return render_template('addAssets.html')
-
+@app.route('/add_Request_View')
+def addRequestView():
+    return render_template('addRequest.html')
 @app.route('/assests_View')
 def assests():
     assestAva = []
