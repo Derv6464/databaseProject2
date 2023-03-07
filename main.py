@@ -31,20 +31,29 @@ def home():
 
 @app.route('/employee_view', methods=['GET', 'POST'])
 def get_data():
-    employ = []
+    employPend = []
+    employApp = []
     connection = oracledb.connect(
         user=user, password=password, dsn=conn_string)
     cur = connection.cursor()
     cur.execute(
-        'Select Employees.employee_id, Employees.name, login.email, job_title.title, employees.DOB, department.dpt_name From assets.employees inner join assets.Login On Employees.login_id=Login.ID inner join assets.Job_title On Employees.job_id=Job_title.ID inner join assets.Department On Employees.department_id=department.dpt_ID')
-    for row in cur:
-        employ.append(
-            {"Employee_ID": row[0], "Name": row[1], "Email": row[2], "Job": row[3], "dob": row[4], "dpt": row[5]})
+        'Select Employees.employee_id, Employees.name, login.email, job_title.title, employees.DOB, department.dpt_name, employees.is_pending, employees.is_approved From assets.employees inner join assets.Login On Employees.login_id=Login.ID inner join assets.Job_title On Employees.job_id=Job_title.ID inner join assets.Department On Employees.department_id=department.dpt_ID')
     # Close the cursor and connection
+    for row in cur:
+        if int(row[6]) != 1:
+            app = True
+            if int(row[7]) != 1:
+                app = False
+            employApp.append({"Employee_ID": row[0], "Name": row[1], "Email": row[2], "Job": row[3], "dob": row[4], "dpt": row[5], "approved":app})
+        else:
+            app = True
+            if int(row[7]) != 1:
+                app = False
+            employPend.append({"Employee_ID": row[0], "Name": row[1], "Email": row[2], "Job": row[3], "dob": row[4], "dpt": row[5], "approved":app})
     cur.close()
     connection.close()
     # Pass the data to the template to display in the HTML table
-    return render_template('index.html', data=employ)
+    return render_template('index.html', data=[employApp,employPend])
 
 
 @app.route('/about_View')
@@ -112,6 +121,36 @@ def retire_ass(id):
     cur.execute(exe)
     con.commit()
     return render_template('after_submit.html')
+
+
+@app.route('/unapp_employ/<int:id>', methods=["GET","POST"])
+def unapp_employ(id):
+    con = oracledb.connect(user=user, password=password, dsn=conn_string)
+    cur = con.cursor()
+    exe = "UPDATE assets.employees SET employees.IS_APPROVED = 0 WHERE employees.employee_id = "+str(id)
+    cur.execute(exe)
+    con.commit()
+    return render_template('after_submit.html')
+
+@app.route('/app_employ/<int:id>', methods=["GET","POST"])
+def app_employ(id):
+    con = oracledb.connect(user=user, password=password, dsn=conn_string)
+    cur = con.cursor()
+    exe = "UPDATE assets.employees SET employees.IS_APPROVED = 1 WHERE employees.employee_id = "+str(id)
+    cur.execute(exe)
+    con.commit()
+    return render_template('after_submit.html')
+
+@app.route('/pend_employ/<int:id>', methods=["GET","POST"])
+def pend_employ(id):
+    con = oracledb.connect(user=user, password=password, dsn=conn_string)
+    cur = con.cursor()
+    exe = "UPDATE assets.employees SET employees.IS_APPROVED = 1 WHERE employees.employee_id = "+str(id)
+    cur.execute(exe)
+    con.commit()
+    return render_template('after_submit.html')
+
+
 @app.route('/Insertion_data', methods=["GET", "POST"])
 def getData():
     fname = request.form["fname"]
