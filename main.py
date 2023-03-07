@@ -11,18 +11,6 @@ conn_string = "localhost:{port}/{service_name}".format(
     port=port, service_name=service_name)
 app = Flask(__name__)
 data = []
-id = []
-
-# get Job_Ids from Employee Table
-connection = oracledb.connect(
-    user=user, password=password, dsn=conn_string)
-cur = connection.cursor()
-job_id = cur.execute('select ID from ASSETS.JOB_TITLE')
-for row in job_id:
-    id.append(row[0])
-cur.close()
-connection.close()
-
 
 @app.route('/')
 def home():
@@ -55,16 +43,9 @@ def get_data():
     # Pass the data to the template to display in the HTML table
     return render_template('index.html', data=[employApp,employPend])
 
-
 @app.route('/about_View')
 def about():
     return render_template('about.html')
-
-
-@app.route('/Insert_View')
-def insert():
-    return render_template('Insertion.html', job_id=id)
-
 
 @app.route('/approve_req/<int:id>', methods=["GET", "POST"])
 def approve_req(id):
@@ -75,7 +56,6 @@ def approve_req(id):
     con.commit()
     return render_template('after_submit.html')
 
-
 @app.route('/close_req/<int:id>', methods=["GET", "POST"])
 def close_req(id):
     con = oracledb.connect(user=user, password=password, dsn=conn_string)
@@ -84,7 +64,6 @@ def close_req(id):
     cur.execute(exe)
     con.commit()
     return render_template('after_submit.html')
-
 
 @app.route('/reject_req/<int:id>', methods=["GET", "POST"])
 def reject_req(id):
@@ -122,7 +101,6 @@ def retire_ass(id):
     con.commit()
     return render_template('after_submit.html')
 
-
 @app.route('/unapp_employ/<int:id>', methods=["GET","POST"])
 def unapp_employ(id):
     con = oracledb.connect(user=user, password=password, dsn=conn_string)
@@ -149,38 +127,6 @@ def pend_employ(id):
     cur.execute(exe)
     con.commit()
     return render_template('after_submit.html')
-
-
-@app.route('/Insertion_data', methods=["GET", "POST"])
-def getData():
-    fname = request.form["fname"]
-    lname = request.form["lname"]
-    email = request.form["email"]
-    num = request.form["phone"]
-    job = request.form["job_id"]
-    date = request.form["date"]
-    print(request.form)
-    Name = fname + " " + lname
-    return render_template('data.html', name=Name, Email=email, Number=num, JOB=job, Date=date)
-
-
-@app.route('/Insert_jobs', methods=["GET", "POST"])
-def getjobsData():
-    id = request.form["id"]
-    title = request.form["title"]
-    min = request.form["min"]
-    max = request.form["max"]
-    con = oracledb.connect(user=user, password=password, dsn=conn_string)
-    cur = con.cursor()
-    # print("INSERT INTO HR.JOBS(JOB_ID, JOB_TITLE, MIN_SALARY, MAX_SALARY) VALUES (:0, :1, :2,:3)", (id, title,  int(min), int(max)))
-
-    cur.execute("INSERT INTO HR.JOBS(JOB_ID, JOB_TITLE, MIN_SALARY, MAX_SALARY) VALUES (:0, :1, :2,:3)",
-                (id, title, int(min), int(max)))
-    con.commit()
-    cur.close()
-    con.close()
-    return render_template('after_submit.html')
-
 
 @app.route('/Add_Assets', methods=["GET", "POST"])
 def getAssetData():
@@ -283,11 +229,6 @@ def getLoginData():
     con.close()
     return render_template('after_submit.html')
 
-@app.route('/empty_View')
-def empty():
-    return render_template('empty.html')
-
-
 @app.route('/add_Asset_View', methods=["GET", "POST"])
 def addAssetView():
     assets = []
@@ -316,7 +257,6 @@ def addLoginView():
     connection.close()
     return render_template('addLogin.html', data=login)
 
-
 @app.route('/add_Request_View', methods=["GET", "POST"])
 def addRequestView():
     assetRequests = []
@@ -341,7 +281,6 @@ def addRequestView():
     connection.close()
     return render_template('addRequest.html', data=[assetRequests, empRequests])
 
-
 @app.route('/assests_View')
 def assests():
     assestAva = []
@@ -364,7 +303,6 @@ def assests():
     cur.close()
     connection.close()
     return render_template('assests.html', data=[assestAva, assetRet])
-
 
 @app.route('/requests_View')
 def requets():
@@ -392,7 +330,6 @@ def requets():
     connection.close()
     return render_template('requests.html', data=[requestCl, requestOp])
 
-
 @app.route('/history_View')
 def history():
     hist = []
@@ -406,12 +343,6 @@ def history():
     cur.close()
     connection.close()
     return render_template('history.html', data=hist)
-
-
-@app.route('/insert_jobs_View')
-def jobs_view():
-    return render_template('Insert_jobs.html')
-
 
 @app.route("/submit_form", methods=["GET", "POST"])
 def submit_form():
@@ -433,7 +364,6 @@ def submit_form():
         (int(
             Id), fname, lname, email, num, date_obj, job, int(salary), float(comm), None, None))
     return render_template('after_submit.html')
-
 
 if __name__ == '__main__':
     app.run()
