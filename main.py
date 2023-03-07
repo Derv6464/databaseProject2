@@ -227,7 +227,7 @@ def assests():
 def requets():
     requestCl = []
     requestOp = []
-
+#pls work
     connection = oracledb.connect(
         user=user, password=password, dsn=conn_string)
     cur = connection.cursor()
