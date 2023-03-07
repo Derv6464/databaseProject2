@@ -23,8 +23,7 @@
                     <th scope="col">ID</th>
                     <th scope="col">begin date</th>
                     <th scope="col">end date</th>
-                    <th scope="col">request</th>
-                    <th scope="col">Action</th>
+                    <th scope="col">request id</th>
                 </tr>
               </thead>
               <tbody id="myTable" style="background-color: rgb(235, 240, 245)">
@@ -35,27 +34,6 @@
                     <td>{{ row["begin date"] }}</td>
                     <td>{{ row["end date"] }}</td>
                     <td>{{ row["request"] }}</td>
-                    <td style="display: flex; gap: 10px">
-                <i
-                  class="fa fa-trash-o"
-                  aria-hidden="true"
-                  style="cursor: pointer"
-                ></i>
-                <i
-                  class="fa fa-pencil"
-                  aria-hidden="true"
-                  style="cursor: pointer"
-                ></i>
-                <div style="margin-top: -3px">
-                  <i
-                    class="fa fa-plus"
-                    aria-hidden="true"
-                    style="cursor: pointer"
-                    data-bs-toggle="modal"
-                    data-bs-target="#myModal"
-                  ></i>
-                </div>
-              </td>
                 </tr>
                 {% endfor %}
               </tbody>

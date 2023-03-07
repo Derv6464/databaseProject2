@@ -27,7 +27,6 @@ connection.close()
 def home():
     return render_template('home.html')
 
-
 @app.route('/employee_view', methods=['GET', 'POST'])
 def get_data():
     employ = []
@@ -43,11 +42,9 @@ def get_data():
     # Pass the data to the template to display in the HTML table
     return render_template('index.html', data=employ)
 
-
 @app.route('/about_View')
 def about():
     return render_template('about.html')
-
 
 @app.route('/Insert_View')
 def insert():
@@ -71,6 +68,32 @@ def close_req(id):
     con.commit()
     return render_template('after_submit.html')
 
+@app.route('/close_ass/<int:id>', methods=["GET","POST"])
+def close_ass(id):
+    con = oracledb.connect(user=user, password=password, dsn=conn_string)
+    cur = con.cursor()
+    exe = "UPDATE assets.assets SET ASSETS.IS_AVAILABLE = 0 WHERE Assets.asset_id = "+str(id)
+    cur.execute(exe)
+    con.commit()
+    return render_template('after_submit.html')
+
+@app.route('/avail_ass/<int:id>', methods=["GET","POST"])
+def avail_ass(id):
+    con = oracledb.connect(user=user, password=password, dsn=conn_string)
+    cur = con.cursor()
+    exe = "UPDATE assets.assets SET ASSETS.IS_AVAILABLE = 1 WHERE Assets.asset_id = "+str(id)
+    cur.execute(exe)
+    con.commit()
+    return render_template('after_submit.html')
+
+@app.route('/retire_ass/<int:id>', methods=["GET","POST"])
+def retire_ass(id):
+    con = oracledb.connect(user=user, password=password, dsn=conn_string)
+    cur = con.cursor()
+    exe = "UPDATE assets.assets SET ASSETS.IS_RETIRED = 1 WHERE Assets.asset_id = "+str(id)
+    cur.execute(exe)
+    con.commit()
+    return render_template('after_submit.html')
 
 @app.route('/reject_req/<int:id>', methods=["GET","POST"])
 def reject_req(id):
@@ -80,35 +103,6 @@ def reject_req(id):
     cur.execute(exe)
     con.commit()
     return render_template('after_submit.html')
-@app.route('/Insertion_data', methods=["GET", "POST"])
-def getData():
-    fname = request.form["fname"]
-    lname = request.form["lname"]
-    email = request.form["email"]
-    num = request.form["phone"]
-    job = request.form["job_id"]
-    date = request.form["date"]
-    print(request.form)
-    Name = fname + " " + lname
-    return render_template('data.html', name=Name, Email=email, Number=num, JOB=job, Date=date)
-
-@app.route('/Insert_jobs', methods=["GET", "POST"])
-def getjobsData():
-    id = request.form["id"]
-    title = request.form["title"]
-    min = request.form["min"]
-    max = request.form["max"]
-    con = oracledb.connect(user=user, password=password, dsn=conn_string)
-    cur = con.cursor()
-    #print("INSERT INTO HR.JOBS(JOB_ID, JOB_TITLE, MIN_SALARY, MAX_SALARY) VALUES (:0, :1, :2,:3)", (id, title,  int(min), int(max)))
-    
-    cur.execute("INSERT INTO HR.JOBS(JOB_ID, JOB_TITLE, MIN_SALARY, MAX_SALARY) VALUES (:0, :1, :2,:3)", 
-                (id, title,  int(min), int(max)))
-    con.commit()
-    cur.close()
-    con.close()
-    return render_template('after_submit.html')
-
 
 @app.route('/Add_Assets', methods=["GET", "POST"])
 def getAssetData():
