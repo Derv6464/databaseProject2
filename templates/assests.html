@@ -4,7 +4,6 @@
 
     <head>
         <title>Assets</title>
-        <link rel="stylesheet" href="index.css">
         {% include 'nav.html' %}
     </head>
 
@@ -19,7 +18,7 @@
         <h2 style="padding-left: 15%"> Avalaible Assets</h2>
         <div id="table">
             <table class="table" id="tbl">
-              <thead style="background-color: #0B0033; color: white">
+              <thead style="background-color: #070707; color: white">
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">Name</th>
@@ -40,6 +39,50 @@
                     <td>{{ row["Brand"] }}</td>
                     <td>{{ row["Company"] }}</td>
                     <td>{{ row["Avaviable"] }}</td>
+                <td style="display: flex; gap: 10px">
+
+
+                        {% if row["Avaviable"] %}
+                            <div style="margin-top: -3px">
+                                 <a href ="{{ url_for('close_ass', id=row["id"])}}" onclick="return confirm('Do you want to make {{ row["name"] }} unavailble');" title="Close Request">
+                                <i
+                                  class="fa fa-times"
+                                  aria-hidden="true"
+                                  style="cursor: pointer"
+                                ></i>
+                                </a>
+                            </div>
+                            <div style="margin-top: -3px">
+                                <a href ="{{ url_for('retire_ass', id=row["id"])}}" onclick="return confirm('Do you want to retire {{ row["name"] }}');" title="Close Request">
+                                <i
+                                  class="fa fa-times-circle"
+                                  aria-hidden="true"
+                                  style="cursor: pointer"
+                                ></i>
+                                </a>
+                            </div>
+
+                    {% else %}
+                            <div style="margin-top: -3px">
+                                <a href ="{{ url_for('avail_ass', id=row["id"])}}" onclick="return confirm('Do you want to make {{ row["name"] }} available');" title="Approve Request">
+                                <i
+                                  class="fa fa-check"
+                                  aria-hidden="true"
+                                  style="cursor: pointer"
+                                ></i>
+                                </a>
+                            </div>
+                            <div style="margin-top: -3px">
+                                <a href ="{{ url_for('retire_ass', id=row["id"])}}" onclick="return confirm('Do you want to retire {{ row["name"] }}');" title="Close Request">
+                                <i
+                                  class="fa fa-times-circle"
+                                  aria-hidden="true"
+                                  style="cursor: pointer"
+                                ></i>
+                                </a>
+                            </div>
+                    {% endif %}
+              </td>
                 </tr>
                 {% endfor %}
               </tbody>
@@ -49,7 +92,7 @@
         <h2 style="padding-left: 15%"> Retired Assets</h2>
         <div id="table">
             <table class="table" id="tbl">
-              <thead style="background-color: #0B0033; color: white">
+              <thead style="background-color: #070707; color: white">
                 <tr>
                     <th scope="col">ID</th>
                     <th scope="col">Name</th>
