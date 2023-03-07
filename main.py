@@ -166,7 +166,7 @@ def getAssetData():
 def getEmploy():
     name = request.form["name"]
     logIn = request.form["login"]
-    dob = request.form["dateOfBirth"]
+    dob = request.form["dob"]
     job = request.form["job"]
     dept = request.form["dept"]
 
@@ -175,10 +175,9 @@ def getEmploy():
 
     cur.execute(
         "INSERT INTO ASSETS.EMPLOYEES(NAME, LOGIN_ID, DOB, JOB_ID, DEPARTMENT_ID, IS_APPROVED, IS_PENDING) VALUES (:0, :1, :2,:3, :4, :5, :6)",
-        (name, logIn, dob, int(job), int(dept), 0, 1))
+        (name, int(logIn), dob, int(job), int(dept), 0, 1))
     con.commit()
     cur.close()
-    con.close()
     return render_template('after_submit.html')
 
 @app.route('/add_employ_View', methods=["GET", "POST"])
