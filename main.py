@@ -26,7 +26,7 @@ connection.close()
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return render_template('about.html')
 
 
 @app.route('/employee_view', methods=['GET', 'POST'])
@@ -178,6 +178,20 @@ def getRequestData():
     con.close()
     return render_template('after_submit.html')
 
+@app.route('/Add_Login', methods=["GET", "POST"])
+def getLoginData():
+    email = request.form["email"]
+    passwordIn = request.form["password"]
+    con = oracledb.connect(user=user, password=password, dsn=conn_string)
+    cur = con.cursor()
+    # print("INSERT INTO HR.JOBS(JOB_ID, JOB_TITLE, MIN_SALARY, MAX_SALARY) VALUES (:0, :1, :2,:3)", (id, title,  int(min), int(max)))
+
+    cur.execute("INSERT INTO ASSETS.LOGIN(EMAIL, PASSWORD) VALUES (:0, :1)",
+                (email, passwordIn))
+    con.commit()
+    cur.close()
+    con.close()
+    return render_template('after_submit.html')
 
 @app.route('/empty_View')
 def empty():
@@ -197,6 +211,20 @@ def addAssetView():
     cur.close()
     connection.close()
     return render_template('addAssets.html', data=assets)
+
+@app.route('/add_Login_View', methods=["GET", "POST"])
+def addLoginView():
+    login = []
+    connection = oracledb.connect(
+        user=user, password=password, dsn=conn_string)
+    cur = connection.cursor()
+    cur.execute('select EMAIL, PASSWORD from ASSETS.LOGIN')
+    for row in cur:
+        login.append({"email": row[0], "password": row[1]})
+    # Close the cursor and connection
+    cur.close()
+    connection.close()
+    return render_template('addLogin.html', data=login)
 
 
 @app.route('/add_Request_View', methods=["GET", "POST"])
