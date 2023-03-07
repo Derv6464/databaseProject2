@@ -7,15 +7,11 @@
     </head>
 
     <body>
-        <a class="nav-link" href="{{url_for('addAssetView')}}" style="color: #FFE8E1"><button padding ="10%" align="right" class="btn btn-dark btn-sm">Add Asset</button></a>
-        <div style="display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;">
-        </div>
-        <br>
-        <h2 style="padding-left: 15%"> Avalaible Assets</h2>
         <div id="table">
+
+                <h2> Available Assets</h2>
+            <a class="nav-link" href="{{url_for('addAssetView')}}" style="color: #FFE8E1"><button text-align = padding ="10%" align="right" class="btn btn-dark btn-sm">Add Asset</button></a><br>
+
             <table class="table" id="tbl">
               <thead style="background-color: #0B0033; color: white">
                 <tr>

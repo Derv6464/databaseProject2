@@ -9,7 +9,7 @@
     </head>
 
     <body>
-    <a class="nav-link" href="{{url_for('addRequestView')}}" style="color: #FFE8E1"><button padding ="10%" align="right" class="btn btn-dark btn-sm">Add Request</button></a>
+
         <div style="display: flex;
             justify-content: center;
             align-items: center;
@@ -17,6 +17,7 @@
         </div>
         <h2 style="padding-left: 15%"> Open Requests</h2>
         <div id="table">
+             <a class="nav-link" href="{{url_for('addRequestView')}}" style="color: #FFE8E1"><button padding ="10%" align="right" class="btn btn-dark btn-sm">Add Request</button></a><br>
             <table class="table" id="tbl">
               <thead style="background-color: #0B0033; color: white">
                 <tr>
