@@ -27,8 +27,6 @@ connection.close()
 def home():
     return render_template('home.html')
 
-
-
 @app.route('/employee_view', methods=['GET', 'POST'])
 def get_data():
     employ = []
@@ -44,11 +42,9 @@ def get_data():
     # Pass the data to the template to display in the HTML table
     return render_template('index.html', data=employ)
 
-
 @app.route('/about_View')
 def about():
     return render_template('about.html')
-
 
 @app.route('/Insert_View')
 def insert():
@@ -72,6 +68,32 @@ def close_req(id):
     con.commit()
     return render_template('after_submit.html')
 
+@app.route('/close_ass/<int:id>', methods=["GET","POST"])
+def close_ass(id):
+    con = oracledb.connect(user=user, password=password, dsn=conn_string)
+    cur = con.cursor()
+    exe = "UPDATE assets.assets SET ASSETS.IS_AVAILABLE = 0 WHERE Assets.asset_id = "+str(id)
+    cur.execute(exe)
+    con.commit()
+    return render_template('after_submit.html')
+
+@app.route('/avail_ass/<int:id>', methods=["GET","POST"])
+def avail_ass(id):
+    con = oracledb.connect(user=user, password=password, dsn=conn_string)
+    cur = con.cursor()
+    exe = "UPDATE assets.assets SET ASSETS.IS_AVAILABLE = 1 WHERE Assets.asset_id = "+str(id)
+    cur.execute(exe)
+    con.commit()
+    return render_template('after_submit.html')
+
+@app.route('/retire_ass/<int:id>', methods=["GET","POST"])
+def retire_ass(id):
+    con = oracledb.connect(user=user, password=password, dsn=conn_string)
+    cur = con.cursor()
+    exe = "UPDATE assets.assets SET ASSETS.IS_RETIRED = 1 WHERE Assets.asset_id = "+str(id)
+    cur.execute(exe)
+    con.commit()
+    return render_template('after_submit.html')
 
 @app.route('/reject_req/<int:id>', methods=["GET","POST"])
 def reject_req(id):
@@ -81,43 +103,13 @@ def reject_req(id):
     cur.execute(exe)
     con.commit()
     return render_template('after_submit.html')
-@app.route('/Insertion_data', methods=["GET", "POST"])
-def getData():
-    fname = request.form["fname"]
-    lname = request.form["lname"]
-    email = request.form["email"]
-    num = request.form["phone"]
-    job = request.form["job_id"]
-    date = request.form["date"]
-    print(request.form)
-    Name = fname + " " + lname
-    return render_template('data.html', name=Name, Email=email, Number=num, JOB=job, Date=date)
-
-@app.route('/Insert_jobs', methods=["GET", "POST"])
-def getjobsData():
-    id = request.form["id"]
-    title = request.form["title"]
-    min = request.form["min"]
-    max = request.form["max"]
-    con = oracledb.connect(user=user, password=password, dsn=conn_string)
-    cur = con.cursor()
-    #print("INSERT INTO HR.JOBS(JOB_ID, JOB_TITLE, MIN_SALARY, MAX_SALARY) VALUES (:0, :1, :2,:3)", (id, title,  int(min), int(max)))
-    
-    cur.execute("INSERT INTO HR.JOBS(JOB_ID, JOB_TITLE, MIN_SALARY, MAX_SALARY) VALUES (:0, :1, :2,:3)", 
-                (id, title,  int(min), int(max)))
-    con.commit()
-    cur.close()
-    con.close()
-    return render_template('after_submit.html')
-
 
 @app.route('/Add_Assets', methods=["GET", "POST"])
 def getAssetData():
     name = request.form["name"]
     model = request.form["model"]
     brand = request.form["brand"]
-    company = request.form["compId"]
-
+    company = request.form["company"]
     con = oracledb.connect(user=user, password=password, dsn=conn_string)
     cur = con.cursor()
     # print("INSERT INTO HR.JOBS(JOB_ID, JOB_TITLE, MIN_SALARY, MAX_SALARY) VALUES (:0, :1, :2,:3)", (id, title,  int(min), int(max)))
@@ -131,8 +123,8 @@ def getAssetData():
 
 @app.route('/Add_Request', methods=["GET", "POST"])
 def getRequestData():
-    asset = request.form["assId"]
-    employee = request.form["empId"]
+    asset = request.form["asset"]
+    employee = request.form["employee"]
     con = oracledb.connect(user=user, password=password, dsn=conn_string)
     cur = con.cursor()
     # print("INSERT INTO HR.JOBS(JOB_ID, JOB_TITLE, MIN_SALARY, MAX_SALARY) VALUES (:0, :1, :2,:3)", (id, title,  int(min), int(max)))
@@ -148,43 +140,12 @@ def getRequestData():
 def empty():
     return render_template('empty.html')
 
-@app.route('/add_Asset_View', methods = ["GET", "POST"])
+@app.route('/add_Asset_View')
 def addAssetView():
-    assets = []
-    connection = oracledb.connect(
-        user=user, password=password, dsn=conn_string)
-    cur = connection.cursor()
-    cur.execute('select COMPANY_ID, COMPANY_NAME from ASSETS.COMPANY')
-    for row in cur:
-        assets.append({"id": row[0], "name": row[1]})
-    # Close the cursor and connection
-    cur.close()
-    connection.close()
-    return render_template('addAssets.html', data=assets)
-
-@app.route('/add_Request_View', methods = ["GET", "POST"])
+    return render_template('addAssets.html')
+@app.route('/add_Request_View')
 def addRequestView():
-    assetRequests = []
-    connection = oracledb.connect(
-        user=user, password=password, dsn=conn_string)
-    cur = connection.cursor()
-    cur.execute('select ASSET_ID, NAME from ASSETS.ASSETS')
-    for row in cur:
-        assetRequests.append({"id": row[0], "name": row[1]})
-    # Close the cursor and connection
-    cur.close()
-    connection.close()
-    empRequests = []
-    connection = oracledb.connect(
-        user=user, password=password, dsn=conn_string)
-    cur = connection.cursor()
-    cur.execute('select EMPLOYEE_ID, NAME from ASSETS.EMPLOYEES')
-    for row in cur:
-        empRequests.append({"id": row[0], "name": row[1]})
-    # Close the cursor and connection
-    cur.close()
-    connection.close()
-    return render_template('addRequest.html', data=[assetRequests,empRequests])
+    return render_template('addRequest.html')
 @app.route('/assests_View')
 def assests():
     assestAva = []
@@ -216,6 +177,7 @@ def requets():
     cur = connection.cursor()
     cur.execute('Select requests.request_id, requests.is_open, requests.is_approved, assets.name, employees.name FROM assets.requests inner join assets.assets on requests.asset_id = assets.asset_id inner join assets.employees on requests.employee_id = employees.employee_id')
     for row in cur:
+
         if int(row[1]) != 1:
             app = True
             if int(row[2]) != 1:
