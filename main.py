@@ -86,7 +86,32 @@ def reject_req(id):
     con.commit()
     return render_template('after_submit.html')
 
+@app.route('/close_ass/<int:id>', methods=["GET","POST"])
+def close_ass(id):
+    con = oracledb.connect(user=user, password=password, dsn=conn_string)
+    cur = con.cursor()
+    exe = "UPDATE assets.assets SET ASSETS.IS_AVAILABLE = 0 WHERE Assets.asset_id = "+str(id)
+    cur.execute(exe)
+    con.commit()
+    return render_template('after_submit.html')
 
+@app.route('/avail_ass/<int:id>', methods=["GET","POST"])
+def avail_ass(id):
+    con = oracledb.connect(user=user, password=password, dsn=conn_string)
+    cur = con.cursor()
+    exe = "UPDATE assets.assets SET ASSETS.IS_AVAILABLE = 1 WHERE Assets.asset_id = "+str(id)
+    cur.execute(exe)
+    con.commit()
+    return render_template('after_submit.html')
+
+@app.route('/retire_ass/<int:id>', methods=["GET","POST"])
+def retire_ass(id):
+    con = oracledb.connect(user=user, password=password, dsn=conn_string)
+    cur = con.cursor()
+    exe = "UPDATE assets.assets SET ASSETS.IS_RETIRED = 1 WHERE Assets.asset_id = "+str(id)
+    cur.execute(exe)
+    con.commit()
+    return render_template('after_submit.html')
 @app.route('/Insertion_data', methods=["GET", "POST"])
 def getData():
     fname = request.form["fname"]
