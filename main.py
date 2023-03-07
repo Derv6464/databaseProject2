@@ -162,6 +162,58 @@ def getAssetData():
     con.close()
     return render_template('after_submit.html')
 
+@app.route('/Add_Employ', methods=["GET", "POST"])
+def getEmploy():
+    name = request.form["name"]
+    logIn = request.form["login"]
+    dob = request.form["dateOfBirth"]
+    job = request.form["job"]
+    dept = request.form["dept"]
+
+    con = oracledb.connect(user=user, password=password, dsn=conn_string)
+    cur = con.cursor()
+
+    cur.execute(
+        "INSERT INTO ASSETS.EMPLOYEES(NAME, LOGIN_ID, DOB, JOB_ID, DEPARTMENT_ID, IS_APPROVED, IS_PENDING) VALUES (:0, :1, :2,:3, :4, :5, :6)",
+        (name, logIn, dob, int(job), int(dept), 0, 1))
+    con.commit()
+    cur.close()
+    con.close()
+    return render_template('after_submit.html')
+
+@app.route('/add_employ_View', methods=["GET", "POST"])
+def addEmployView():
+    job = []
+    dept = []
+    login = []
+    connection = oracledb.connect(
+        user=user, password=password, dsn=conn_string)
+    cur = connection.cursor()
+    cur.execute('select ID, TITLE from ASSETS.JOB_TITLE')
+    for row in cur:
+        job.append({"id": row[0], "name": row[1]})
+    # Close the cursor and connection
+    cur.close()
+    connection.close()
+    connection = oracledb.connect(
+        user=user, password=password, dsn=conn_string)
+    cur = connection.cursor()
+    cur.execute('select DPT_ID, DPT_NAME from ASSETS.DEPARTMENT')
+    for row in cur:
+        dept.append({"id": row[0], "name": row[1]})
+    # Close the cursor and connection
+    cur.close()
+    connection.close()
+    connection = oracledb.connect(
+        user=user, password=password, dsn=conn_string)
+    cur = connection.cursor()
+    cur.execute('select ID, EMAIL from ASSETS.LOGIN')
+    for row in cur:
+        login.append({"id": row[0], "name": row[1]})
+    # Close the cursor and connection
+    cur.close()
+    connection.close()
+    return render_template('addEmployee.html', data=[job,dept,login])
 
 @app.route('/Add_Request', methods=["GET", "POST"])
 def getRequestData():
