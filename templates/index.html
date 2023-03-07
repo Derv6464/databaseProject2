@@ -1,17 +1,5 @@
 <!DOCTYPE html>
 <html>
-<style>
-    a:link{
-        color: red;
-    }
-    a:visited{
-        color: red;
-    }
-
-    a:hover{
-        color: crimson;
-    }
-</style>
 
   <head>
     <title>Employees</title>
@@ -21,15 +9,9 @@
   <body>
 
     <main>
-      <div id="selector">
-        <input
-          type="text"
-          class="form-control"
-          id="input1"
-          onkeyup="myFunction()"
-          placeholder="Employee Name"
-        />
-      </div>
+    <a class="nav-link" href="{{url_for('addLoginView')}}" style="color: #FFE8E1"><button padding ="10%" align="right" class="btn btn-dark btn-sm">Create a Login</button></a>
+    <a class="nav-link" href="{{url_for('addEmployView')}}" style="color: #FFE8E1"><button padding ="10%" align="right" class="btn btn-dark btn-sm">Register an Employee</button></a>
+
     <h2 style="padding-left: 15%"> Pending Employees</h2>
       <div id="table">
         <table class="table" id="tbl">
@@ -59,7 +41,7 @@
             <td style="display: flex; gap: 10px">
                         {% if row["approved"] %}
                             <div style="margin-top: -3px">
-                                 <a href ="{{ url_for('unapp_employ', id=row["id"])}}" onclick="return confirm('Do you want to unapprove {{ row["name"] }}');" title="Unapprove">
+                                 <a href ="{{ url_for('unapp_employ', id=row["Employee_ID"])}}" onclick="return confirm('Do you want to unapprove {{ row["Name"] }}');" title="Unapprove">
                                 <i
                                   class="fa fa-times"
                                   aria-hidden="true"
@@ -68,7 +50,7 @@
                                 </a>
                             </div>
                             <div style="margin-top: -3px">
-                                <a href ="{{ url_for('pend_employ', id=row["id"])}}" onclick="return confirm('Do you want confrim the status of {{ row["name"] }}');" title="Confrim Status">
+                                <a href ="{{ url_for('pend_employ', id=row["Employee_ID"])}}" onclick="return confirm('Do you want confrim the status of {{ row["Name"] }}');" title="Confrim Status">
                                 <i
                                   class="fa fa-times-circle"
                                   aria-hidden="true"
@@ -79,7 +61,7 @@
 
                     {% else %}
                             <div style="margin-top: -3px">
-                                <a href ="{{ url_for('app_employ', id=row["id"])}}" onclick="return confirm('Do you want to approve {{ row["name"] }}');" title="Approve">
+                                <a href ="{{ url_for('app_employ', id=row["Employee_ID"])}}" onclick="return confirm('Do you want to approve {{ row["Name"] }}');" title="Approve">
                                 <i
                                   class="fa fa-check"
                                   aria-hidden="true"
@@ -88,7 +70,7 @@
                                 </a>
                             </div>
                              <div style="margin-top: -3px">
-                                <a href ="{{ url_for('pend_employ', id=row["id"])}}" onclick="return confirm('Do you want confrim the status of {{ row["name"] }}');" title="Confrim Status">
+                                <a href ="{{ url_for('pend_employ', id=row["Employee_ID"])}}" onclick="return confirm('Do you want confrim the status of {{ row["Name"] }}');" title="Confrim Status">
                                 <i
                                   class="fa fa-times-circle"
                                   aria-hidden="true"
@@ -134,7 +116,15 @@
         </table>
       </div>
 
-    
+    <div id="selector">
+        <input
+          type="text"
+          class="form-control"
+          id="input1"
+          onkeyup="myFunction()"
+          placeholder="Employee Name"
+        />
+      </div>
     </main>
     <script>
       function myFunction() {
