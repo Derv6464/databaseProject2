@@ -55,16 +55,18 @@
             />
           </div>
           <div class="form-group col-md-7">
+            <label for="model">Company</label><br>
             <select name = "compId">
               {% for row in data %}
                   <OPTION value= {{row["id"] }}>{{ row["name"] }}</OPTION>
               {% endfor %}
             </select>
-        </div>
-        <div style="margin-top: 7rem, float=left" >
+            <div style="margin-top: 7rem, float=left" >
+              <br>
           <button type="submit" class="btn btn-dark btn-sm">
             Add Record
           </button>
+        </div>
         </div>
       </form>
     </div>
