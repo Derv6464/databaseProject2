@@ -208,13 +208,13 @@ def getEmploy():
     dob = request.form["dob"]
     job = request.form["job"]
     dept = request.form["dept"]
-
+    dob_obj = datetime.datetime.strptime(dob, "%Y-%m-%d").date()
     con = oracledb.connect(user=user, password=password, dsn=conn_string)
     cur = con.cursor()
 
     cur.execute(
         "INSERT INTO ASSETS.EMPLOYEES(NAME, LOGIN_ID, DOB, JOB_ID, DEPARTMENT_ID, IS_APPROVED, IS_PENDING) VALUES (:0, :1, :2,:3, :4, :5, :6)",
-        (name, int(logIn), dob, int(job), int(dept), 0, 1))
+        (name, int(logIn), dob_obj, int(job), int(dept), 0, 1))
     con.commit()
     cur.close()
     return render_template('after_submit.html')
