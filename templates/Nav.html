@@ -17,11 +17,6 @@
 <nav class="navbar navbar-dark" id="bg-mynav" style="background-color: #0B0033">
   <div class="container-fluid" style="display: flex; justify-content: center">
     <ul class="nav justify-content-center">
-      <li class="nav-item">
-        <a class="nav-link active" href="{{ url_for('get_data') }}" style="color: #FFE8E1"
-          >View Employees</a
-        >
-      </li>
 
       <li class="nav-item">
         <a class="nav-link" href="{{ url_for('about') }}" style="color: #FFE8E1">About</a>
@@ -31,12 +26,6 @@
         <a class="nav-link" href="{{url_for('assests')}}" style="color: #FFE8E1"
           >Assets</a
         >
-      </li>
-        <li class="nav-item">
-        <a class="nav-link" href="{{url_for('requets')}}" style="color: #FFE8E1"
-          >Requests</a
-        >
-      </li>
 
       </li>
         <li class="nav-item">
@@ -47,17 +36,36 @@
 
       </li>
         <li class="nav-item">
-        <a class="nav-link" href="{{url_for('addRequestView')}}" style="color: #FFE8E1">Add Request</a>
+        <a class="nav-link" href="{{url_for('history')}}" style="color: #FFE8E1">Asset History</a>
+      </li>
+
+        <li class="nav-item">
+        <a class="nav-link active" href="{{ url_for('get_data') }}" style="color: #FFE8E1"
+          >Employees</a
+        >
       </li>
 
       </li>
         <li class="nav-item">
-        <a class="nav-link" href="{{url_for('history')}}" style="color: #FFE8E1">History</a>
+        <a class="nav-link" href="{{url_for('addLoginView')}}" style="color: #FFE8E1">Add Login</a>
+      </li>
+
+      </li>
+        <li class="nav-item">
+        <a class="nav-link" href="{{url_for('requets')}}" style="color: #FFE8E1"
+          >Requests</a
+        >
+      </li>
+
+      </li>
+        <li class="nav-item">
+        <a class="nav-link" href="{{url_for('addRequestView')}}" style="color: #FFE8E1">Add Request</a>
       </li>
          </li>
         <li class="nav-item">
         <a class="nav-link" href="{{url_for('addEmployView')}}" style="color: #FFE8E1">Add Employee</a>
       </li>
+
     </ul>
   </div>
 </nav>
