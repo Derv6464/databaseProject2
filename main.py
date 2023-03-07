@@ -1,6 +1,7 @@
 import datetime
 from flask import Flask, request, render_template
 import oracledb
+
 # Replace with your actual Oracle database credentials
 user = 'SYSTEM'
 password = 'root'
@@ -27,104 +28,120 @@ connection.close()
 def home():
     return render_template('home.html')
 
+
 @app.route('/employee_view', methods=['GET', 'POST'])
 def get_data():
     employ = []
     connection = oracledb.connect(
         user=user, password=password, dsn=conn_string)
     cur = connection.cursor()
-    cur.execute('Select Employees.employee_id, Employees.name, login.email, job_title.title, employees.DOB, department.dpt_name From assets.employees inner join assets.Login On Employees.login_id=Login.ID inner join assets.Job_title On Employees.job_id=Job_title.ID inner join assets.Department On Employees.department_id=department.dpt_ID')
+    cur.execute(
+        'Select Employees.employee_id, Employees.name, login.email, job_title.title, employees.DOB, department.dpt_name From assets.employees inner join assets.Login On Employees.login_id=Login.ID inner join assets.Job_title On Employees.job_id=Job_title.ID inner join assets.Department On Employees.department_id=department.dpt_ID')
     for row in cur:
-        employ.append({"Employee_ID": row[0], "Name": row[1], "Email":row[2], "Job":row[3], "dob":row[4], "dpt":row[5]})
+        employ.append(
+            {"Employee_ID": row[0], "Name": row[1], "Email": row[2], "Job": row[3], "dob": row[4], "dpt": row[5]})
     # Close the cursor and connection
     cur.close()
     connection.close()
     # Pass the data to the template to display in the HTML table
     return render_template('index.html', data=employ)
 
+
 @app.route('/about_View')
 def about():
     return render_template('about.html')
+
 
 @app.route('/Insert_View')
 def insert():
     return render_template('Insertion.html', job_id=id)
 
-@app.route('/approve_req/<int:id>', methods=["GET","POST"])
+
+@app.route('/approve_req/<int:id>', methods=["GET", "POST"])
 def approve_req(id):
     con = oracledb.connect(user=user, password=password, dsn=conn_string)
     cur = con.cursor()
-    exe = "UPDATE assets.requests SET requests.is_approved = 1 WHERE requests.request_id = "+str(id)
+    exe = "UPDATE assets.requests SET requests.is_approved = 1 WHERE requests.request_id = " + str(id)
     cur.execute(exe)
     con.commit()
     return render_template('after_submit.html')
 
-@app.route('/close_req/<int:id>', methods=["GET","POST"])
+
+@app.route('/close_req/<int:id>', methods=["GET", "POST"])
 def close_req(id):
     con = oracledb.connect(user=user, password=password, dsn=conn_string)
     cur = con.cursor()
-    exe = "UPDATE assets.requests SET requests.is_open = 0 WHERE requests.request_id = "+str(id)
+    exe = "UPDATE assets.requests SET requests.is_open = 0 WHERE requests.request_id = " + str(id)
     cur.execute(exe)
     con.commit()
     return render_template('after_submit.html')
 
-@app.route('/close_ass/<int:id>', methods=["GET","POST"])
-def close_ass(id):
-    con = oracledb.connect(user=user, password=password, dsn=conn_string)
-    cur = con.cursor()
-    exe = "UPDATE assets.assets SET ASSETS.IS_AVAILABLE = 0 WHERE Assets.asset_id = "+str(id)
-    cur.execute(exe)
-    con.commit()
-    return render_template('after_submit.html')
 
-@app.route('/avail_ass/<int:id>', methods=["GET","POST"])
-def avail_ass(id):
-    con = oracledb.connect(user=user, password=password, dsn=conn_string)
-    cur = con.cursor()
-    exe = "UPDATE assets.assets SET ASSETS.IS_AVAILABLE = 1 WHERE Assets.asset_id = "+str(id)
-    cur.execute(exe)
-    con.commit()
-    return render_template('after_submit.html')
-
-@app.route('/retire_ass/<int:id>', methods=["GET","POST"])
-def retire_ass(id):
-    con = oracledb.connect(user=user, password=password, dsn=conn_string)
-    cur = con.cursor()
-    exe = "UPDATE assets.assets SET ASSETS.IS_RETIRED = 1 WHERE Assets.asset_id = "+str(id)
-    cur.execute(exe)
-    con.commit()
-    return render_template('after_submit.html')
-
-@app.route('/reject_req/<int:id>', methods=["GET","POST"])
+@app.route('/reject_req/<int:id>', methods=["GET", "POST"])
 def reject_req(id):
     con = oracledb.connect(user=user, password=password, dsn=conn_string)
     cur = con.cursor()
-    exe = "UPDATE assets.requests SET requests.is_approved = 0 WHERE requests.request_id = "+str(id)
+    exe = "UPDATE assets.requests SET requests.is_approved = 0 WHERE requests.request_id = " + str(id)
     cur.execute(exe)
     con.commit()
     return render_template('after_submit.html')
+
+
+@app.route('/Insertion_data', methods=["GET", "POST"])
+def getData():
+    fname = request.form["fname"]
+    lname = request.form["lname"]
+    email = request.form["email"]
+    num = request.form["phone"]
+    job = request.form["job_id"]
+    date = request.form["date"]
+    print(request.form)
+    Name = fname + " " + lname
+    return render_template('data.html', name=Name, Email=email, Number=num, JOB=job, Date=date)
+
+
+@app.route('/Insert_jobs', methods=["GET", "POST"])
+def getjobsData():
+    id = request.form["id"]
+    title = request.form["title"]
+    min = request.form["min"]
+    max = request.form["max"]
+    con = oracledb.connect(user=user, password=password, dsn=conn_string)
+    cur = con.cursor()
+    # print("INSERT INTO HR.JOBS(JOB_ID, JOB_TITLE, MIN_SALARY, MAX_SALARY) VALUES (:0, :1, :2,:3)", (id, title,  int(min), int(max)))
+
+    cur.execute("INSERT INTO HR.JOBS(JOB_ID, JOB_TITLE, MIN_SALARY, MAX_SALARY) VALUES (:0, :1, :2,:3)",
+                (id, title, int(min), int(max)))
+    con.commit()
+    cur.close()
+    con.close()
+    return render_template('after_submit.html')
+
 
 @app.route('/Add_Assets', methods=["GET", "POST"])
 def getAssetData():
     name = request.form["name"]
     model = request.form["model"]
     brand = request.form["brand"]
-    company = request.form["company"]
+    company = request.form["compId"]
+
     con = oracledb.connect(user=user, password=password, dsn=conn_string)
     cur = con.cursor()
     # print("INSERT INTO HR.JOBS(JOB_ID, JOB_TITLE, MIN_SALARY, MAX_SALARY) VALUES (:0, :1, :2,:3)", (id, title,  int(min), int(max)))
 
-    cur.execute("INSERT INTO ASSETS.ASSETS(NAME, MODEL, BRAND, COMPANY_ID, IS_AVAILABLE, IS_RETIRED) VALUES (:0, :1, :2,:3, :4, :5)",
-                (name, model, brand, int(company), 0, 0))
+    cur.execute(
+        "INSERT INTO ASSETS.ASSETS(NAME, MODEL, BRAND, COMPANY_ID, IS_AVAILABLE, IS_RETIRED) VALUES (:0, :1, :2,:3, :4, :5)",
+        (name, model, brand, int(company), 0, 0))
     con.commit()
     cur.close()
     con.close()
     return render_template('after_submit.html')
 
+
 @app.route('/Add_Request', methods=["GET", "POST"])
 def getRequestData():
-    asset = request.form["asset"]
-    employee = request.form["employee"]
+    asset = request.form["assId"]
+    employee = request.form["empId"]
     con = oracledb.connect(user=user, password=password, dsn=conn_string)
     cur = con.cursor()
     # print("INSERT INTO HR.JOBS(JOB_ID, JOB_TITLE, MIN_SALARY, MAX_SALARY) VALUES (:0, :1, :2,:3)", (id, title,  int(min), int(max)))
@@ -136,16 +153,52 @@ def getRequestData():
     con.close()
     return render_template('after_submit.html')
 
+
 @app.route('/empty_View')
 def empty():
     return render_template('empty.html')
 
-@app.route('/add_Asset_View')
+
+@app.route('/add_Asset_View', methods=["GET", "POST"])
 def addAssetView():
-    return render_template('addAssets.html')
-@app.route('/add_Request_View')
+    assets = []
+    connection = oracledb.connect(
+        user=user, password=password, dsn=conn_string)
+    cur = connection.cursor()
+    cur.execute('select COMPANY_ID, COMPANY_NAME from ASSETS.COMPANY')
+    for row in cur:
+        assets.append({"id": row[0], "name": row[1]})
+    # Close the cursor and connection
+    cur.close()
+    connection.close()
+    return render_template('addAssets.html', data=assets)
+
+
+@app.route('/add_Request_View', methods=["GET", "POST"])
 def addRequestView():
-    return render_template('addRequest.html')
+    assetRequests = []
+    connection = oracledb.connect(
+        user=user, password=password, dsn=conn_string)
+    cur = connection.cursor()
+    cur.execute('select ASSET_ID, NAME from ASSETS.ASSETS')
+    for row in cur:
+        assetRequests.append({"id": row[0], "name": row[1]})
+    # Close the cursor and connection
+    cur.close()
+    connection.close()
+    empRequests = []
+    connection = oracledb.connect(
+        user=user, password=password, dsn=conn_string)
+    cur = connection.cursor()
+    cur.execute('select EMPLOYEE_ID, NAME from ASSETS.EMPLOYEES')
+    for row in cur:
+        empRequests.append({"id": row[0], "name": row[1]})
+    # Close the cursor and connection
+    cur.close()
+    connection.close()
+    return render_template('addRequest.html', data=[assetRequests, empRequests])
+
+
 @app.route('/assests_View')
 def assests():
     assestAva = []
@@ -153,19 +206,22 @@ def assests():
     connection = oracledb.connect(
         user=user, password=password, dsn=conn_string)
     cur = connection.cursor()
-    cur.execute('Select Assets.asset_id, assets.name, assets.model, assets.brand, company.company_name, assets.is_available, assets.is_retired FROM assets.assets inner join assets.company on assets.company_id = company.company_id')
+    cur.execute(
+        'Select Assets.asset_id, assets.name, assets.model, assets.brand, company.company_name, assets.is_available, assets.is_retired FROM assets.assets inner join assets.company on assets.company_id = company.company_id')
     for row in cur:
         if int(row[6]) == 1:
-            assetRet.append({"id": row[0], "name": row[1], "Model":row[2], "Brand":row[3], "Company":row[4]})
+            assetRet.append({"id": row[0], "name": row[1], "Model": row[2], "Brand": row[3], "Company": row[4]})
         else:
             ava = True
             if int(row[5]) != 1:
-               ava = False
-            assestAva.append({"id": row[0], "name": row[1], "Model":row[2], "Brand":row[3], "Company":row[4],"Avaviable":ava })
+                ava = False
+            assestAva.append(
+                {"id": row[0], "name": row[1], "Model": row[2], "Brand": row[3], "Company": row[4], "Avaviable": ava})
     # Close the cursor and connection
     cur.close()
     connection.close()
-    return render_template('assests.html',data=[assestAva,assetRet])
+    return render_template('assests.html', data=[assestAva, assetRet])
+
 
 @app.route('/requests_View')
 def requets():
@@ -175,23 +231,24 @@ def requets():
     connection = oracledb.connect(
         user=user, password=password, dsn=conn_string)
     cur = connection.cursor()
-    cur.execute('Select requests.request_id, requests.is_open, requests.is_approved, assets.name, employees.name FROM assets.requests inner join assets.assets on requests.asset_id = assets.asset_id inner join assets.employees on requests.employee_id = employees.employee_id')
+    cur.execute(
+        'Select requests.request_id, requests.is_open, requests.is_approved, assets.name, employees.name FROM assets.requests inner join assets.assets on requests.asset_id = assets.asset_id inner join assets.employees on requests.employee_id = employees.employee_id')
     for row in cur:
-
         if int(row[1]) != 1:
             app = True
             if int(row[2]) != 1:
                 app = False
-            requestCl.append({"id": row[0], "is approved":app, "item":row[3], "employee":row[4]})
+            requestCl.append({"id": row[0], "is approved": app, "item": row[3], "employee": row[4]})
         else:
             app = True
             if int(row[2]) != 1:
                 app = False
-            requestOp.append({"id": row[0], "is approved":app, "item":row[3], "employee":row[4]})
+            requestOp.append({"id": row[0], "is approved": app, "item": row[3], "employee": row[4]})
     # Close the cursor and connection
     cur.close()
     connection.close()
-    return render_template('requests.html',data=[requestCl,requestOp])
+    return render_template('requests.html', data=[requestCl, requestOp])
+
 
 @app.route('/history_View')
 def history():
@@ -201,16 +258,16 @@ def history():
     cur = connection.cursor()
     cur.execute('select ASSET_HISTORY_ID,BEGIN_DATE,END_DATE,REQUEST_ID from ASSETS.HISTORY')
     for row in cur:
-        hist.append({"id": row[0], "begin date": row[1], "end date":row[2], "request":row[3] })
+        hist.append({"id": row[0], "begin date": row[1], "end date": row[2], "request": row[3]})
     # Close the cursor and connection
     cur.close()
     connection.close()
-    return render_template('history.html',data=hist)
+    return render_template('history.html', data=hist)
+
 
 @app.route('/insert_jobs_View')
 def jobs_view():
     return render_template('Insert_jobs.html')
-
 
 
 @app.route("/submit_form", methods=["GET", "POST"])
@@ -228,8 +285,10 @@ def submit_form():
     date = request.form["date"]
     date_obj = datetime.datetime.strptime(date, "%Y-%m-%d").date()
     # Insert the data into the database
-    cur.execute("INSERT INTO HR.Employees (EMPLOYEE_ID,FIRST_NAME, LAST_NAME, EMAIL,PHONE_NUMBER,HIRE_DATE,JOB_ID,SALARY,COMMISSION_PCT,MANAGER_ID,DEPARTMENT_ID) VALUES (:0, :1, :2,:3,:4,:5,:6,:7,:8,:9,:10)", (int(
-        Id), fname, lname, email, num, date_obj, job, int(salary), float(comm), None, None))
+    cur.execute(
+        "INSERT INTO HR.Employees (EMPLOYEE_ID,FIRST_NAME, LAST_NAME, EMAIL,PHONE_NUMBER,HIRE_DATE,JOB_ID,SALARY,COMMISSION_PCT,MANAGER_ID,DEPARTMENT_ID) VALUES (:0, :1, :2,:3,:4,:5,:6,:7,:8,:9,:10)",
+        (int(
+            Id), fname, lname, email, num, date_obj, job, int(salary), float(comm), None, None))
     return render_template('after_submit.html')
 
 
